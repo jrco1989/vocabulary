@@ -1,0 +1,10 @@
+alcance primera version :
+crear y editar significado de las palabras
+ordenar por fecha de publicacion
+barra de busqueda
+filtrar por categorias
+ver significados complementarios
+publicarla en heroku
+
+
+alcancen v2:

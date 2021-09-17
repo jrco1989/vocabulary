@@ -1,0 +1,7 @@
+Django==3.2.7
+mysql-connector-python==8.0.26
+mysql-connector==2.2.9
+mysqlclient==2.0.3
+
+
+
