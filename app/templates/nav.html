@@ -1,0 +1,10 @@
+
+{%if user.is_authenticated%}
+<p>Hola @ {{user.username}}
+</p><a href="{%url 'chao'%}">
+    <i class="fas fa-sign-out-alt" ></i>
+</a>
+{%else%}
+<button ><a href="{% url 'login' %}" class="r">login</a></button>
+<button ><a href="{% url 'sign' %}" class="r">sing in</a></button>
+{%endif%}
