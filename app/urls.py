@@ -5,7 +5,7 @@ from app import views
 urlpatterns=[
 	path(
         route='',
-        view=views.home,
+        view=views.WordsView.as_view(),
         name='home'
     ),path(
         route='login',
@@ -13,13 +13,28 @@ urlpatterns=[
         name='login',
     ),
     path(
-        route='chao',
+        route='logout',
         view=views.logout_view,
-        name='chao',
+        name='logout',
     ),
     path(
-        route='sign',
+        route='signup',
         view=views.SignupView.as_view(),
-        name='sign'
+        name='signup'
+    ),
+    path(
+        route='createword',
+        view=views.CreateWordView.as_view(),
+        name='create_word'
+    ),
+    path(
+        route='edit/word/<pk>',
+        view=views.UpdateWordView.as_view(),
+        name='edit_word'
+    ),
+    path(
+        route='delete/word/<pk>',
+        view=views.DeleteWordView.as_view(),
+        name='delete_word'
     )
     ]

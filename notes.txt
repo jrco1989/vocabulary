@@ -1,10 +1,12 @@
 alcance primera version :
 crear y editar significado de las palabras
+ver significados complementarios
 ordenar por fecha de publicacion
 barra de busqueda
 filtrar por categorias
-ver significados complementarios
 publicarla en heroku
+
+// cómo se renderizan los helptxt de django 
 
 
 alcancen v2:

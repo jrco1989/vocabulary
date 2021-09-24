@@ -1,0 +1,17 @@
+{%block head_content%}
+<title>Create new word</title>
+{%endblock%}
+{%block container %}
+<h3>Create new word</h3>
+
+	<form  method="POST" enctype="multipart/form-data"><!--el action es la url, agregar siempre el csrf -->
+		{% csrf_token %}
+		
+		{{ form.as_p }}
+		<button class="btn btn-primary btn-block mt-5" type="submit">SAVE</button>
+		<button class="btn btn-primary btn-block mt-5" type="submit">RETURN</button>
+	</form>
+
+
+
+{%endblock%}

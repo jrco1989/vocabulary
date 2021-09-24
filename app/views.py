@@ -2,20 +2,44 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import login
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import fields
-from django.shortcuts import redirect
+from django.forms import ModelForm
+from django.http import request
+from django.shortcuts import get_object_or_404, redirect
 from django.shortcuts import render
 from django.urls.base import reverse_lazy
 from django.views.generic.edit import FormView
+from django.views.generic import CreateView
+from django.views.generic import DeleteView
+from django.views.generic import ListView
+from django.views.generic import UpdateView
+
+from app.forms import CreateForm
+from app.forms import WordForm
 
 from app.models import Profile
-from django.forms import ModelForm
-from app.forms import CreateForm
+from app.models import Word
 
 
-def home(request):
-    return render(request, 'home.html',{'error':'invalid username and password'})
+class WordsView(ListView):
+
+    template_name = 'home.html'
+    model = Word
+    ordering = ('-created',)
+    paginate_by = 3
+    context_object_name = 'words'
+    #   import pdb; pdb.set_trace()
+
+    def get_context_data(self, **kwargs):
+        """Add user and profile to context."""
+        context = super().get_context_data(**kwargs)
+        #context['user'] = self.request.user
+        if self.request.user.is_authenticated:
+            context['profile'] = self.request.user.profile
+        
+        return context
 
 def login_view(request):
     if request.method == 'POST':
@@ -31,7 +55,6 @@ def login_view(request):
 
 @login_required
 def logout_view(request):
-    print("WWWWWWWWWWWWWWWWWWWWWW")
     logout(request)
     return redirect ('home')
     
@@ -51,3 +74,37 @@ class SignupView(FormView):
 	def form_valid(self, form):
 		form.save()
 		return super().form_valid(form)
+
+class CreateWordView(CreateView):
+    """Create a new post."""
+
+    template_name = 'create_word.html'
+    form_class = WordForm
+    success_url = reverse_lazy('home')
+    initial = {'user':1,'title':'new'}
+    
+    def get_context_data(self, **kwargs):
+        """Add user and profile to context."""
+        context = super().get_context_data(**kwargs)
+        #context['user'] = self.request.user
+        context['user'] = self.request.user.profile
+        
+        return context
+
+    def  get_initial(self):
+        profile = get_object_or_404(Profile, id = self.request.user.profile.id)
+        return {'user':profile}
+
+class UpdateWordView(UpdateView):
+    model = Word
+    fields = ['title','meaning']
+    success_url = '/'
+    template_name = 'create_word.html'
+
+
+class DeleteWordView(DeleteView):
+    model = Word
+    success_url = '/'
+
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
