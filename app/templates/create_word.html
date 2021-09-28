@@ -1,15 +1,33 @@
 {%block head_content%}
-<title>Create new word</title>
+<title>{{title}} word</title>
 {%endblock%}
 {%block container %}
-<h3>Create new word</h3>
-
+<h3>{{title}} word</h3>
 	<form  method="POST" enctype="multipart/form-data"><!--el action es la url, agregar siempre el csrf -->
 		{% csrf_token %}
 		
-		{{ form.as_p }}
+		<!-- {{ form.as_p }} -->
+		{%for field in form %}
+		<div class="form-group {% if field.errors %}has-error{% endif %}" id="group_{{ field.name }}">
+			{%if field.name  != 'user' %}
+				<label for="id_{{ field.name }}" class="control-label">{{ field.label }}</label>
+			{% endif %}
+			<div class="input-group mb-3">
+				<div class="input-group-prepend">
+					<span class="input-group-text" id="basic-addon1"><i class="fas fa-user"></i></span>
+				</div>
+				{{ field }}
+			</div>
+			{%if field.name == 'genre' and forloop%}
+			<a href="{% url 'create_genre' pk=id_word %}">+</a> 
+			<a href="{% url 'list_genre' %}">borrar</a> 
+			<hr>
+		{% endif%}
+		</div>		
+
+		{% endfor %}
 		<button class="btn btn-primary btn-block mt-5" type="submit">SAVE</button>
-		<button class="btn btn-primary btn-block mt-5" type="submit">RETURN</button>
+		<a href="{% url 'home' %}">RETURN</a>
 	</form>
 
 

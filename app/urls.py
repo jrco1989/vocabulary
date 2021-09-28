@@ -33,8 +33,48 @@ urlpatterns=[
         name='edit_word'
     ),
     path(
-        route='delete/word/<pk>',
+        route='delete/word/<int:pk>',
         view=views.DeleteWordView.as_view(),
         name='delete_word'
+    ),
+    path(
+        route='detail/word/<int:pk>',
+        view=views.DetailWordView.as_view(),
+        name='detail_word'
+    ),
+    path(
+        route='complement/create/<int:pk>',
+        view=views.CreateComplementView.as_view(),
+        name='create_complement'
+    ),
+    path(
+        route='detail/complement/<int:pk>',
+        view=views.ComplementDetailView.as_view(),
+        name='detail_complement'
+    ),
+    path(
+        route='edit/complement/<pk>',
+        view=views.UpdateComplementView.as_view(),
+        name='edit_complement'
+    ),
+    path(
+        route='delete/complement/<int:pk>',
+        view=views.DeleteComplementView.as_view(),
+        name='delete_complement'
+    ),
+    path(
+        route='genre/create/<int:pk>',
+        view=views.CreateGenreView.as_view(),
+        name='create_genre'
+    ),
+    path(
+        route='genre/list/',
+        view=views.ListGenreView.as_view(),
+        name='list_genre'
+    ),
+    path(
+        route='genre/delete/<int:pk>',
+        view=views.DeleteGenreView.as_view(),
+        name='delete_genre'
     )
     ]

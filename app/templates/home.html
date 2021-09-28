@@ -10,22 +10,20 @@
         <a href="{%url 'edit_word'  pk=word.id%}" style="">
         <span class="glyphicon glyphicon-pencil"></span>
       </a>
-      <form method="POST" action="{% url 'delete_word' pk=word.id %}">
       <a href="{%url 'delete_word' pk=word.id%}" type="submit">
         <span class="glyphicon glyphicon-trash"></span>
       </a>
-    </form>
-
-      <form method="POST" action="{% url 'delete_word' pk=word.id %}">
-        {% csrf_token %}<input type="submit" value="DELETE" class="glyphicon glyphicon-trash">
-     </form>
     {% endif %}
-    <h3>{{ word.title}}</h3>
-    <h4>{{ word.meaning}}</h4>
-    <h5>{{ word.created}} by {{word.user}}</h5>
-    <br>
-    
-       
+    <h3><a href="{%url 'detail_word' pk=word.id%}">{{ word.title}}</a></h3> 
+    <p><strong>Genres:</strong> {% for genre in word.genre.all %} {{ genre }}{% if not forloop.last %},{% endif %}{% endfor %}</p>  
+    <p>{{ word.meaning}}</p>
+    <p>{{ word.created}} by {{word.user}}</p>
+
+    {% for complement in word.complement_set.all %}
+    <a href="">{{complement.title}}</a>{% if not forloop.last %},{% endif %}
+    {% endfor %}
+    <hr>
+ 
 
     {%endfor%}
 

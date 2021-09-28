@@ -31,9 +31,9 @@ class Genre(models.Model):
     )
 
     user = models.ForeignKey(
-    Profile,
-    on_delete= models.CASCADE,
-    default = ""
+        Profile,
+        on_delete= models.CASCADE,
+        default = ""
     )
 
     def __str__(self):
@@ -58,7 +58,9 @@ class Word(models.Model):
     )
     genre = models.ManyToManyField(
         Genre,
-        help_text= 'choice categories'
+        blank=True,
+        null=True,
+        help_text= 'choice one or more categories'
         )
 
     class Meta():
@@ -69,8 +71,10 @@ class Word(models.Model):
 
 class Complement(models.Model):
     
-    parent = models.ManyToManyField(
+    parent = models.ForeignKey(
         Word,
+        on_delete= models.CASCADE,
+        default = ""
     )
     user = models.ForeignKey(
         Profile,

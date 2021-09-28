@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.forms import fields, widgets #para importar el modelo ususario 
 
-from app.models import Genre
+from app.models import Complement, Genre
 from app.models import Profile
 from app.models import Word
 
@@ -42,7 +42,7 @@ class CreateForm (forms.Form):
 	def save(self):
 		data = self.cleaned_data
 		data.pop('password_confirmation')
-		user = User.objects.create_user(**data) #el **data me ayuda para n otener que escribir todos los datos com opor ejemplo "email=data['email']", ed ecir que los dos arteriscos me ayudan par enviar todo el diccinario
+		user = User.objects.create_user(**data) #el **data me ayuda para no tener que escribir todos los datos com opor ejemplo "email=data['email']", ed ecir que los dos arteriscos me ayudan par enviar todo el diccinario
 		profile = Profile(user=user)
 		profile.save()
 
@@ -51,14 +51,37 @@ class WordForm (forms.ModelForm):
 
 	class Meta():
 		model = Word
-		fields =('user','title','meaning','genre')
-		CHOICES = (
-    ("1", "Naveen"),
-    ("2", "Pranav"),
-    ("3", "Isha"),
-    ("4", "Saloni"),
-)
+		fields = ('user','title','meaning','genre')
 		widgets = {'user': forms.HiddenInput(), 'genre': forms.CheckboxSelectMultiple()}
 
+	def __init__(self, *args, **kwargs):
+		print('kwargs')
+		print(kwargs)
+		user = kwargs['initial']['user']
+		super(WordForm, self).__init__(*args, **kwargs)
+		self.fields['genre'].queryset = Genre.objects.filter(user=user)
+
 			
-		
+class ComplementForm (forms.ModelForm):
+
+	class Meta():
+		model = Complement
+		fields = ('user','parent','title','meaning')
+		widgets = {
+			'user': forms.HiddenInput(),
+			'parent': forms.HiddenInput()
+		}
+
+
+class GenreForm (forms.ModelForm):
+
+	class Meta():
+		model = Genre
+		fields = ('user','name')
+		widgets = {'user': forms.HiddenInput()}
+
+class dELETEGenreForm(forms.ModelForm):
+	
+	class Meta():
+		model = Genre
+		fields = ('name',)
