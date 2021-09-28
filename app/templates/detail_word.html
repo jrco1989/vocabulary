@@ -1,0 +1,28 @@
+{%block head_content%}
+<title>Details word</title>
+
+{%endblock%}
+{%block container %}
+<h3>Details word</h3>
+{% if user.is_authenticated and profile == word.user %}
+        <a href="{%url 'edit_word'  pk=word.id%}" >
+        <span class="glyphicon glyphicon-pencil"></span>
+      </a>
+      <a href="{%url 'delete_word' pk=word.id%}" type="submit">
+        <span class="glyphicon glyphicon-trash"></span>
+      </a>
+    {% endif %}
+    <p>{{ object.title }}</p>
+    <p>{{ object.meaning }}</p>
+    <p>{{ word.created}} by {{word.user}}</p>
+    <p><strong>Genres:</strong> {% for genre in word.genre.all %} {{ genre }}{% if not forloop.last %},{% endif %}{% endfor %}</p>  
+{% for complement in word.complement_set.all %}
+    <a href="{% url 'detail_complement' pk=complement.id%}">{{complement.title}}</a>{% if not forloop.last %},{% endif %}
+    {% endfor %}
+     <a href="{%url 'create_complement' pk=word.id %}" >
+        Add complement
+      </a>
+    <hr>
+    <a href="{% url 'home' %}"><button class="btn btn-primary btn-block mt-5" type="">RETURN</button></a>
+
+{%endblock%}

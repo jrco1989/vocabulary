@@ -1,0 +1,16 @@
+{%block head_content%}
+<title>{{title}} complement</title>
+{%endblock%}
+{%block container %}
+<h3>{{title}} complement</h3>
+	<form  method="POST" enctype="multipart/form-data">
+		{% csrf_token %}
+		
+		{{ form.as_p }}
+		<button class="btn btn-primary btn-block mt-5" type="submit">SAVE</button>
+		<a href="{% url 'detail_word' pk=id_word %}">RETURN</a>
+	</form>
+
+
+
+{%endblock%}

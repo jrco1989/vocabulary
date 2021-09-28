@@ -1,0 +1,19 @@
+{%block head_content%}
+<title>create genre</title>
+{%endblock%}
+{%block container %}
+<h3>create genre</h3>
+	<form  method="POST" enctype="multipart/form-data">
+		{% csrf_token %}
+		
+		{{ form.as_p }}
+		<button class="btn btn-primary btn-block mt-5" type="submit">SAVE</button>
+
+		<button onclick="history.back()">
+			Return
+		</button>
+	</form>
+
+
+
+{%endblock%}

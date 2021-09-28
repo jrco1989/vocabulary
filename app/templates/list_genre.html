@@ -1,0 +1,19 @@
+{%block head_content%}
+<title>registro de usuarios</title>
+{%endblock%}
+{%block container %}
+	<form action="" method="POST"><!--el action es la url, agregar siempre el csrf -->
+		{% csrf_token %}
+		
+		{%for genre in genres%}
+			<input type="checkbox" name="genre_check" value="{{genre.id}}" >
+			{{genre.name}} id:
+			{{genre.id}}
+			<br>
+			
+		{%endfor%}
+		<button class="btn btn-primary btn-block mt-5" type="submit">delete</button>
+	</form>
+	<a href="{% url 'home' %}"><button class="btn btn-primary btn-block mt-5" type="">RETURN</button></a>
+
+{%endblock%}

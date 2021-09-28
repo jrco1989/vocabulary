@@ -1,0 +1,21 @@
+{%block head_content%}
+<title>Details complement</title>
+
+{%endblock%}
+{%block container %}
+<h3>Details complement</h3>
+{% if user.is_authenticated and profile == complement.user %}
+        <a href="{%url 'edit_complement'  pk=complement.id%}" >
+          editar
+      </a>
+      <a href="{%url 'delete_complement' pk=complement.id%}" type="submit">
+        borrar
+      </a>
+    {% endif %}
+    <p>{{ object.title }}</p>
+    <p>{{ object.meaning }}</p>
+    <p>created by {{complement.user}}</p>
+
+    <a href="{% url 'detail_word' pk=complement.parent.id%}"><button class="btn btn-primary btn-block mt-5" type="">RETURN</button></a>
+
+{%endblock%}
