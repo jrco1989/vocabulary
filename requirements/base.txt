@@ -1,0 +1,8 @@
+Django
+pillow
+mysql-connector-python
+mysql-connector
+mysqlclient
+
+
+
