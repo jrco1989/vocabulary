@@ -52,7 +52,10 @@ class WordForm (forms.ModelForm):
 	class Meta():
 		model = Word
 		fields = ('user','title','meaning','genre')
-		widgets = {'user': forms.HiddenInput(), 'genre': forms.CheckboxSelectMultiple()}
+		widgets = {
+			'user': forms.HiddenInput(), 
+			'meaning' : forms.Textarea(),
+			'genre': forms.CheckboxSelectMultiple()}
 
 	def __init__(self, *args, **kwargs):
 		print('kwargs')
@@ -69,7 +72,8 @@ class ComplementForm (forms.ModelForm):
 		fields = ('user','parent','title','meaning')
 		widgets = {
 			'user': forms.HiddenInput(),
-			'parent': forms.HiddenInput()
+			'parent': forms.HiddenInput(),
+			'meaning' : forms.Textarea(),
 		}
 
 

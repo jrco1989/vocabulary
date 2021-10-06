@@ -1,5 +1,6 @@
+{% extends 'base.html'%}
 {%block head_content%}
-<title>registro de usuarios</title>
+<title>Delete Genre</title>
 {%endblock%}
 {%block container %}
 	<form action="" method="POST"><!--el action es la url, agregar siempre el csrf -->
@@ -14,6 +15,6 @@
 		{%endfor%}
 		<button class="btn btn-primary btn-block mt-5" type="submit">delete</button>
 	</form>
-	<a href="{% url 'home' %}"><button class="btn btn-primary btn-block mt-5" type="">RETURN</button></a>
+	<a onclick="history.back()"><button class="btn btn-primary btn-block mt-5" type="">RETURN</button></a>
 
 {%endblock%}

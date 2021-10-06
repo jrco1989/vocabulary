@@ -1,3 +1,5 @@
+{% extends 'base.html'%}
+
 {%block head_content%}
 <title>{{title}} word</title>
 {%endblock%}
@@ -13,14 +15,12 @@
 				<label for="id_{{ field.name }}" class="control-label">{{ field.label }}</label>
 			{% endif %}
 			<div class="input-group mb-3">
-				<div class="input-group-prepend">
-					<span class="input-group-text" id="basic-addon1"><i class="fas fa-user"></i></span>
-				</div>
 				{{ field }}
+			
 			</div>
 			{%if field.name == 'genre' and forloop%}
 			<a href="{% url 'create_genre' pk=id_word %}">+</a> 
-			<a href="{% url 'list_genre' %}">borrar</a> 
+			<a href="{% url 'list_genre' pk=id_word  %}">borrar</a> 
 			<hr>
 		{% endif%}
 		</div>		

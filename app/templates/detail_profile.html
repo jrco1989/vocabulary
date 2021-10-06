@@ -1,0 +1,15 @@
+{% extends 'base.html'%}
+{%block head_content%}
+<title>Details word</title>
+
+{%endblock%}
+{%block container %}
+<h3>Details profile</h3>
+
+    <p>{{ object.user }}</p>
+    <p>{{ object.user.username }}</p>
+    <p><strong>Words:</strong>
+      {% for word in object.word_set.all %} {{ genre }}
+        {% if not forloop.last %},{% endif %}
+      {% endfor %}</p>  
+{%endblock%}

@@ -7,7 +7,7 @@
     <H1>Last words</H1>
     {%for word in words%}
     {% if user.is_authenticated and profile == word.user %}
-        <a href="{%url 'edit_word'  pk=word.id%}" style="">
+        <a href="{%url 'edit_word'  pk=word.id%}">
         <span class="glyphicon glyphicon-pencil"></span>
       </a>
       <a href="{%url 'delete_word' pk=word.id%}" type="submit">

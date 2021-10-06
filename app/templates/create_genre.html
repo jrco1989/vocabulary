@@ -1,3 +1,4 @@
+{% extends 'base.html'%}
 {%block head_content%}
 <title>create genre</title>
 {%endblock%}
@@ -9,7 +10,7 @@
 		{{ form.as_p }}
 		<button class="btn btn-primary btn-block mt-5" type="submit">SAVE</button>
 
-		<button onclick="history.back()">
+		<button class="btn btn-primary btn-block mt-5"  onclick="history.back()">
 			Return
 		</button>
 	</form>

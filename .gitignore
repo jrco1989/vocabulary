@@ -1,9 +1,7 @@
 *.pyc
 *~
 __pycache__
-app/__pycache__/
+app/__pycache__
+app/migrations
 .env/
-/.env/
-/env/
-env/
 /static/
