@@ -2,43 +2,44 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     {%if user.is_authenticated%}
 
-    <a class="navbar-brand" href="{% url 'home'%}">
-        {% if request.user.profile.picture %}
-        <img src="{{ request.user.profile.picture.url }}" height="35" class="d-inline-block align-top rounded-circle" />
-        {% else%}
-        <img src="{% static 'img/default-profile.png' %}" height="35" class="d-inline-block align-top rounded-circle" />
-        {% endif %}
-    </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+        <a class="navbar-brand" href="{% url 'home'%}">
+            {% if request.user.profile.picture %}
+            <img src="{{ request.user.profile.picture.url }}" height="35" class="d-inline-block align-top rounded-circle" />
+            {% else%}
+            <img src="{% static 'img/default-profile.png' %}" height="35" class="d-inline-block align-top rounded-circle" />
+            {% endif %}
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02"
+            aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-    <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
-        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-            <li class="nav-item active">
-                <a class="nav-link nav-icon" href="{% url 'detail_user' request.user.id %}">
-                    @ {{user.username}}
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link nav-icon" href="{%url 'create_word'%}">
-                    <span class="glyphicon glyphicon-plus"></span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link nav-icon" href="{%url 'logout'%}">
-                    <i class="fas fa-sign-out-alt"></i>
-                </a>
-            </li>
-        </ul>
-        <form class="form-inline my-2 my-lg-0 nav-icon">
-            <input class="form-control mr-sm-2 nav-icon" type="search" placeholder="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-          </form>
-    </div>
+        <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                <li class="nav-item active">
+                    <a class="nav-link nav-icon" href="{% url 'detail_user' request.user.id %}">
+                        @ {{user.username}}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-icon" href="{%url 'create_word'%}">
+                        <span class="glyphicon glyphicon-plus"></span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-icon" href="{%url 'logout'%}">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </a>
+                </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0 nav-icon">
+                <input class="form-control mr-sm-2 nav-icon" type="search" placeholder="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+        </div>
     {%else%}
-    <button><a href="{% url 'login' %}" class="r">login</a></button>
-    <button><a href="{% url 'signup' %}" class="r">sing in</a></button>
+        <button><a href="{% url 'login' %}" class="r">login</a></button>
+        <button><a href="{% url 'signup' %}" class="r">sing in</a></button>
     {%endif%}
 
 </nav>
