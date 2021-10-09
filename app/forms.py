@@ -15,37 +15,86 @@ class CreateForm (forms.Form):
 	last_name=forms.CharField(min_length=3, max_length=90 )
 	email=forms.CharField(min_length=6, max_length=70, widget=forms.EmailInput())
 
-	# los widgets son una representación de django de elementos de html y pueden iclluir ciertas validaciones 
-	
-	#se debe crear la funcion de validación para validar los campos del formulario
 	def clean_username(self):
-		#Username most be unique
-		username=self.cleaned_data['username']#debemos traer el valor con este atributo	que se trea de un diccionario
-		#usamos filter en vez de get para evitar que no straiga un aexcepción, 
-		#el exist se usa para evitar hacer un query de todo el usuario, nos retorna un booleano 
+		username=self.cleaned_data['username'] 
 		username_taken=User.objects.filter(username=username).exists()
 		if username_taken:
-			raise forms.ValidationError ('Username is already in use') #para lanzar una excepción 
-		return username #es necesario retornar el dato para evitar que cuando se llame el metodo clean no suceda error por estar vacío
+			raise forms.ValidationError ('Username is already in useee')
+		return username 
 
 	def clean(self):
-		#verify passwords 
-		data=super().clean() #no queremo ssobre escribir todo el método, para esto usamos dla variable data que traerá todos los datos usando super() que un aforma de python de llamar el mpetodo 
+		data=super().clean() 
 		password=data['password']
 		password_confirmation=data['password_confirmation']
 		if password!=password_confirmation:
-			raise forms.ValidationError('Password do not match.') #lanzamos nuevamente la exceocion 
+			raise forms.ValidationError('Password do not match.') 
 
 		return data
 
-        #Create user and profile.
 	def save(self):
 		data = self.cleaned_data
 		data.pop('password_confirmation')
-		user = User.objects.create_user(**data) #el **data me ayuda para no tener que escribir todos los datos com opor ejemplo "email=data['email']", ed ecir que los dos arteriscos me ayudan par enviar todo el diccinario
+		user = User.objects.create_user(**data) 
 		profile = Profile(user=user)
 		profile.save()
 
+class ProfileForm2(forms.Form):
+
+	user_id = forms.IntegerField(required=True, widget = forms.HiddenInput())
+	username = forms.CharField(required=False, label=('Username:'),error_messages={forms.ValidationError: 'Please enter your name'})
+	first_name = forms.CharField(required=False, label=('First Name:'))
+	last_name = forms.CharField(required=False, label=('Last Name:'))
+	email = forms.EmailField(required=False, label=('Email:'))
+	
+	def clean_username(self):
+		username=self.cleaned_data['username']
+		own_username = User.objects.get(id=self.cleaned_data['user_id']).username
+		username_taken=User.objects.filter(username=username).exists()	
+		if username_taken:
+			print('it is error')
+			raise forms.ValidationError ('Username is already in use') 
+		return username 
+
+	def clean(self):
+		data=super().clean() 
+		return data
+
+	def save(self):
+		data = self.cleaned_data
+		
+	
+
+class ProfileForm(forms.ModelForm):
+
+	user_id = forms.IntegerField(required=True, widget = forms.HiddenInput())
+	username = forms.CharField(required=False, label=('Username:'))
+	first_name = forms.CharField(required=False, label=('First Name:'))
+	last_name = forms.CharField(required=False, label=('Last Name:'))
+	email = forms.EmailField(required=False, label=('Email:'))
+	
+	def clean_username(self):
+		username=self.cleaned_data['username']
+		own_username = User.objects.get(id=self.cleaned_data['user_id']).username
+		username_taken=User.objects.filter(username=username).exists()	
+		if username_taken and username != own_username:
+			print('it is error')
+			raise forms.ValidationError ('Username is already in use') 
+		return username 
+
+	def clean(self):
+		data=super().clean() 
+		return data
+	
+	class Meta():
+
+		model = Profile
+		fields = ('user_id','username','first_name','last_name','email','picture',)
+		# widgets = {'username': forms.TextInput(),}
+		# widgets = {'picture': forms.FileInput(attrs={'style': 'display:none;'}),}
+		widgets = {
+			'user_id': forms.HiddenInput(),
+		}
+	
 
 class WordForm (forms.ModelForm):
 

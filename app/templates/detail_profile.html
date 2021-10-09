@@ -4,12 +4,47 @@
 
 {%endblock%}
 {%block container %}
-<h3>Details profile</h3>
+<h3>Details of your account</h3>
 
-    <p>{{ object.user }}</p>
-    <p>{{ object.user.username }}</p>
-    <p><strong>Words:</strong>
-      {% for word in object.word_set.all %} {{ genre }}
-        {% if not forloop.last %},{% endif %}
-      {% endfor %}</p>  
+      <form  method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <!-- {{ form.as_p }} -->
+        {% if form.errors%}
+            <li>Check errors</li>
+            {% endif %}
+        {%for field in form %}
+        <div class="form-group {% if field.errors %}has-error{% endif %}" id="group_{{ field.name }}">
+          <div class="input-group mb-3">
+            
+            {%if field.name  != 'user_id' %}
+              {{ field.label }}
+            {% endif %}
+            {{ field }}
+            {% if field.errors%}
+            {% for error in field.errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
+            {% endif %}
+            
+            {%if field.name  == 'picture' %}
+            <label for ="id_picture" id="icon_upload" class="fa fa-camera">
+            </label>
+                <!-- <input type="file" name="picture" id="id_picture" accept="image/*" style="display: none;" > -->
+            {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+        <button class="btn btn-primary btn-block mt-5" type="submit">SAVE</button>
+        <a href="{% url 'home' %}">RETURN</a>
+      </form>
+
+      <p><strong>Words:</strong>
+        {% for word in object.word_set.all %} {{ word }}
+          {% if not forloop.last %},{% endif %}
+        {% endfor %}
+      </p>  
+    
 {%endblock%}

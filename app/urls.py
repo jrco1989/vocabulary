@@ -31,7 +31,7 @@ urlpatterns=[
     ),
     path(
         route='user/details/<int:pk>',
-        view=views.ProfileDetailView.as_view(),
+        view=views.ProfileUpdateView.as_view(),
         name='detail_user'
     ),
     #words

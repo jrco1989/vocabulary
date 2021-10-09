@@ -26,6 +26,8 @@ from app.forms import ComplementForm
 from app.forms import CreateForm
 from app.forms import dELETEGenreForm
 from app.forms import GenreForm
+from app.forms import ProfileForm
+from app.forms import ProfileForm2
 from app.forms import WordForm
 
 from app.models import Complement, Genre, Profile
@@ -54,6 +56,100 @@ def logout_view(request):
     return redirect ('index')
 
 
+class SignupView(FormView):
+
+	template_name = 'new.html'
+	form_class = CreateForm
+	models = Profile
+	success_url = reverse_lazy('login')
+
+	def form_valid(self, form):
+		form.save()
+		return super().form_valid(form)
+        
+
+class ProfileUpdateView(LoginRequiredMixin, UpdateView):
+    
+    model = Profile
+    form_class = ProfileForm
+    success_url = reverse_lazy('home')
+    template_name = 'detail_profile.html'
+
+    def  get_initial(self):
+        user = self.request.user
+        return {
+            'user_id':user.id,
+            'username':user.username,
+            'email':user.email,
+            'first_name':user.first_name,
+            'last_name':user.last_name,
+        }
+    
+    def form_valid(self, form):
+
+        if form.is_valid():
+            user = get_object_or_404(User, id=self.request.POST['user_id'])
+            user.username = self.request.POST['username']
+            user.last_name = self.request.POST['last_name']
+            user.first_name = self.request.POST['first_name']
+            user.email = self.request.POST['email']
+            user.save()
+        
+        form.save()
+        return super().form_valid(form)
+
+class ProfileUpdateView(LoginRequiredMixin, UpdateView):
+    
+    model = Profile
+    form_class = ProfileForm
+    success_url = reverse_lazy('home')
+    template_name = 'detail_profile.html'
+
+    def  get_initial(self):
+        user = self.request.user
+        return {
+            'user_id':user.id,
+            'username':user.username,
+            'email':user.email,
+            'first_name':user.first_name,
+            'last_name':user.last_name,
+        }
+    
+    def form_valid(self, form):
+
+        if form.is_valid():
+            user = get_object_or_404(User, id=self.request.POST['user_id'])
+            user.username = self.request.POST['username']
+            user.last_name = self.request.POST['last_name']
+            user.first_name = self.request.POST['first_name']
+            user.email = self.request.POST['email']
+            user.save()
+        
+        form.save()
+        return super().form_valid(form)
+
+class ProfileUpdateView2(LoginRequiredMixin, FormView):
+    
+    model = Profile
+    form_class = ProfileForm2
+    success_url = reverse_lazy('home')
+    template_name = 'detail_profile.html'
+
+    def  get_initial(self):
+        user = self.request.user
+        return {
+            'user_id':user.id,
+            'username':user.username,
+            'email':user.email,
+            'first_name':user.first_name,
+            'last_name':user.last_name,
+        }
+    
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
+
+
 class WordsView(LoginRequiredMixin, ListView):
 
     template_name = 'home.html'
@@ -74,45 +170,11 @@ class WordsView(LoginRequiredMixin, ListView):
         return Word.objects.filter(user = self.request.user.profile)
 
 
-class ProfileDetailView(LoginRequiredMixin, DetailView):
-    model = Profile
-    template_name = 'detail_profile.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        #if self.request.user.is_authenticated:
-         #   context['profile'] = self.request.user.profile
-        print(context)
-        return context
-
-
-
-
-class CreteModel(ModelForm):
-    class Meta():
-        model = Profile
-        fields = '__all__'
-    def __str__(self):
-        return self.name
-
-
-class SignupView(FormView):
-
-	template_name = 'new.html'
-	form_class = CreateForm
-	models = Profile
-	success_url = reverse_lazy('login')
-
-	def form_valid(self, form):
-		form.save()
-		return super().form_valid(form)
-
-
 class CreateWordView(LoginRequiredMixin, CreateView):
 
     template_name = 'create_word.html'
     form_class = WordForm
-    success_url = reverse_lazy('user')
+    success_url = reverse_lazy('home')
     
     def get_context_data(self, **kwargs):
         """Add profile to context."""
@@ -131,11 +193,11 @@ class CreateWordView(LoginRequiredMixin, CreateView):
         return {'user':profile}
 
 
-class UpdateWordView(UpdateView):
+class UpdateWordView(LoginRequiredMixin,UpdateView):
     
     model = Word
     form_class = WordForm
-    success_url = '/'
+    success_url = reverse_lazy('home')
     template_name = 'create_word.html'
 
     def get_context_data(self, **kwargs):
@@ -280,7 +342,6 @@ class ListGenreView(LoginRequiredMixin, ListView, FormMixin):
         return super().get(request, *args, **kwargs)
     
     def post(self, request, *args, **kwargs):
-        print('posy yyyyyyyyyyyyyyyyyyy')
         genres_id = request.POST.getlist('genre_check')
         for id in genres_id:
             instance = Genre.objects.get(id=id)
@@ -291,11 +352,7 @@ class ListGenreView(LoginRequiredMixin, ListView, FormMixin):
             print('insert pk')
             return redirect('create_word')
 
-        print("don't enteredif ")
-        print(self.kwargs['pk'] )
-		
         url= reverse('edit_word', kwargs={'pk':self.kwargs['pk'] })
-        
         return redirect(url)
 
 
