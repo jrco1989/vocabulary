@@ -4,6 +4,7 @@
     <title>Home</title>
 {% endblock %}             
 {% block container %}
+<div class="d1">
     <H1>Last words</H1>
     {%for word in words%}
     {% if user.is_authenticated and profile == word.user %}
@@ -50,4 +51,25 @@
             </li>
         {%endif%}
     </ul>
-{% endblock%}
+</div>    
+<div class="d2">
+
+{% load static %}
+<script src="{% static 'js/scripts.js' %}"></script>
+
+    Filters
+    <form  method="POST">
+        <p>Please select your filter:</p>
+		{% csrf_token %}
+		
+        {%for genre in genres%}
+			<input type="checkbox" name="genre_check" value="{{genre.id}}" >
+			{{genre}}
+			<br>
+			
+		{%endfor%}
+		<button class="btn btn-primary btn-block mt-5" type="submit">delete</button>
+		<button class="btn btn-primary btn-block mt-5" type="submit">delete</button>
+      </form>
+</div>
+    {% endblock%}

@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.db import models
-from django.db.models import fields
+from django.db.models import fields, query
 from django.forms import ModelForm
 from django.http import request
 from django.shortcuts import get_object_or_404
@@ -24,7 +24,7 @@ from django.views.generic import UpdateView
 
 from app.forms import ComplementForm
 from app.forms import CreateForm
-from app.forms import dELETEGenreForm
+from app.forms import DeleteGenreForm
 from app.forms import GenreForm
 from app.forms import ProfileForm
 from app.forms import ProfileForm2
@@ -98,76 +98,64 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
         form.save()
         return super().form_valid(form)
 
-class ProfileUpdateView(LoginRequiredMixin, UpdateView):
-    
-    model = Profile
-    form_class = ProfileForm
-    success_url = reverse_lazy('home')
-    template_name = 'detail_profile.html'
 
-    def  get_initial(self):
-        user = self.request.user
-        return {
-            'user_id':user.id,
-            'username':user.username,
-            'email':user.email,
-            'first_name':user.first_name,
-            'last_name':user.last_name,
-        }
-    
-    def form_valid(self, form):
-
-        if form.is_valid():
-            user = get_object_or_404(User, id=self.request.POST['user_id'])
-            user.username = self.request.POST['username']
-            user.last_name = self.request.POST['last_name']
-            user.first_name = self.request.POST['first_name']
-            user.email = self.request.POST['email']
-            user.save()
-        
-        form.save()
-        return super().form_valid(form)
-
-class ProfileUpdateView2(LoginRequiredMixin, FormView):
-    
-    model = Profile
-    form_class = ProfileForm2
-    success_url = reverse_lazy('home')
-    template_name = 'detail_profile.html'
-
-    def  get_initial(self):
-        user = self.request.user
-        return {
-            'user_id':user.id,
-            'username':user.username,
-            'email':user.email,
-            'first_name':user.first_name,
-            'last_name':user.last_name,
-        }
-    
-    def form_valid(self, form):
-        form.save()
-        return super().form_valid(form)
-
-
-class WordsView(LoginRequiredMixin, ListView):
+class WordsView(LoginRequiredMixin, ListView, FormMixin):
 
     template_name = 'home.html'
     model = Word
+    form_class = DeleteGenreForm
     ordering = ('-created',)
     paginate_by = 10
     context_object_name = 'words'
     #   import pdb; pdb.set_trace()
+
+    obj_ints={}
 
     def get_context_data(self, **kwargs):
         
         context = super().get_context_data(**kwargs)
         if self.request.user.is_authenticated:
             context['profile'] = self.request.user.profile
+            genres = Genre.objects.filter(user=self.request.user.profile)
+            context['genres'] = genres
         return context
     
+        
     def get_queryset(self):
-        return Word.objects.filter(user = self.request.user.profile)
+        print('kwargs')
+        dict = self.kwargs['dict']
+        query = Word.objects.filter(user = self.request.user.profile).order_by('-created')
+        if dict=='0':
+            return query
+        genre_query= []
+        for i in dict.split('+'):
+            print(i)
+            q_aux = query.filter(genre=i)
+            for genre in q_aux:
+                if genre not in genre_query:
+                    genre_query.append(genre)
+
+        return genre_query
+
+    def get(self, request, *args, **kwargs):
+        print('instance get')
+        print(kwargs)
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        genres_id = request.POST.getlist('genre_check')
+        print('***********instance POST')
+        print(kwargs)
+        obj={}
+        obj2=''
+        for id in genres_id:
+            instance = Genre.objects.get(id=id)
+            obj[instance.name] = instance.id
+            # obj2.append(instance.id)
+            obj2 += str(instance.id)+'+'
+        obj2 = obj2[:len(obj2)-1]
+        url= reverse('home', kwargs={'dict':obj2})
+        return redirect(url)
 
 
 class CreateWordView(LoginRequiredMixin, CreateView):
@@ -215,7 +203,7 @@ class UpdateWordView(LoginRequiredMixin,UpdateView):
 
 class DeleteWordView(DeleteView):
     model = Word
-    success_url = '/'
+    success_url = reverse_lazy('home')
 
     def get(self, request, *args, **kwargs):
         return self.post(request, *args, **kwargs)
@@ -292,7 +280,6 @@ class DeleteComplementView(DeleteView):
         print(id_deleted)
         complement = get_object_or_404(Complement, id = self.kwargs['pk'])
 
-        print('id_deletedid_deletedid_deletedid_deletedid_deletedid_deletedid_deletedid_deletedid_deleted')
         return reverse('detail_word', args = [complement.parent.id])
 
 
@@ -330,7 +317,7 @@ class CreateGenreView(CreateView):
 class ListGenreView(LoginRequiredMixin, ListView, FormMixin):
     
     models = Genre
-    form_class = dELETEGenreForm
+    form_class = DeleteGenreForm
     template_name = 'list_genre.html'
     context_object_name = 'genres'
 
@@ -338,18 +325,16 @@ class ListGenreView(LoginRequiredMixin, ListView, FormMixin):
         return Genre.objects.filter(user = self.request.user.profile)
 
     def get(self, request, *args, **kwargs):
-        print(' yyyyyyyyyyyyyyyyyyy')
         return super().get(request, *args, **kwargs)
     
     def post(self, request, *args, **kwargs):
         genres_id = request.POST.getlist('genre_check')
+
         for id in genres_id:
             instance = Genre.objects.get(id=id)
             instance.delete()
-            #instance.save()
         
         if self.kwargs['pk'] == 0:
-            print('insert pk')
             return redirect('create_word')
 
         url= reverse('edit_word', kwargs={'pk':self.kwargs['pk'] })

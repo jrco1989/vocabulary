@@ -133,7 +133,7 @@ class GenreForm (forms.ModelForm):
 		fields = ('user','name')
 		widgets = {'user': forms.HiddenInput()}
 
-class dELETEGenreForm(forms.ModelForm):
+class DeleteGenreForm(forms.ModelForm):
 	
 	class Meta():
 		model = Genre

@@ -32,6 +32,28 @@ html, body {
     float: left;
 }
 
+.d1{
+    background:rgb(251, 253, 253);
+}
+  
+.d2{background:LightSalmon;}
+
+.d2{
+    background:rgb(236, 234, 234);
+    border-style: solid;
+}
+.container {
+    width: 100%;
+    background: rgb(251, 253, 253);
+    display: grid;
+    /* Only change code below this line */
+
+    grid-template-columns: auto 50em 36% 2fr 1fr;
+
+    /* Only change code above this line */
+    grid-template-rows: 50% 50%;
+  }
+
 .nav-icon:hover {
     color: #58ee5f;;
 }
