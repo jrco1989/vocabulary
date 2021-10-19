@@ -100,7 +100,7 @@ class WordForm (forms.ModelForm):
 
 	class Meta():
 		model = Word
-		fields = ('user','title','meaning','genre')
+		fields = ('genre','user','title','meaning',)
 		widgets = {
 			'user': forms.HiddenInput(), 
 			'meaning' : forms.Textarea(),

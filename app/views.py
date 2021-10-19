@@ -1,3 +1,4 @@
+from typing import KeysView
 from django.contrib.auth import authenticate
 from django.contrib.auth import login
 from django.contrib.auth import logout
@@ -45,7 +46,8 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         if user:
             login(request, user)
-            return redirect ('home')      
+            url = reverse('home',kwargs={'dict':0})
+            return redirect(url)      
         else:
             return render(request, 'login.html',{'error':'invalid username and password'})
     return render(request, 'login.html')
@@ -72,7 +74,7 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     
     model = Profile
     form_class = ProfileForm
-    success_url = reverse_lazy('home')
+    success_url = reverse_lazy('home', kwargs={'dict':0})
     template_name = 'detail_profile.html'
 
     def  get_initial(self):
@@ -122,14 +124,24 @@ class WordsView(LoginRequiredMixin, ListView, FormMixin):
     
         
     def get_queryset(self):
-        print('kwargs')
+        
+        queryset = self.request.GET.get("searchByTitle")
+        
+        if queryset!=None:
+            query = Word.objects.filter(
+                user = self.request.user.profile).filter(
+                    #published_date__lte=timezone.now(),
+                    title__icontains = queryset,
+                ).order_by('-created')
+            return query
+
         dict = self.kwargs['dict']
         query = Word.objects.filter(user = self.request.user.profile).order_by('-created')
         if dict=='0':
             return query
         genre_query= []
         for i in dict.split('+'):
-            print(i)
+            
             q_aux = query.filter(genre=i)
             for genre in q_aux:
                 if genre not in genre_query:
@@ -138,22 +150,27 @@ class WordsView(LoginRequiredMixin, ListView, FormMixin):
         return genre_query
 
     def get(self, request, *args, **kwargs):
-        print('instance get')
-        print(kwargs)
         return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         genres_id = request.POST.getlist('genre_check')
-        print('***********instance POST')
-        print(kwargs)
+        
+        
+        
+        
         obj={}
         obj2=''
-        for id in genres_id:
-            instance = Genre.objects.get(id=id)
-            obj[instance.name] = instance.id
-            # obj2.append(instance.id)
-            obj2 += str(instance.id)+'+'
-        obj2 = obj2[:len(obj2)-1]
+        if len(genres_id):
+
+            for id in genres_id:
+                instance = Genre.objects.get(id=id)
+                obj[instance.name] = instance.id
+                # obj2.append(instance.id)
+                obj2 += str(instance.id)+'+'
+            obj2 = obj2[:len(obj2)-1]
+            
+        else:
+            obj2= '0'
         url= reverse('home', kwargs={'dict':obj2})
         return redirect(url)
 
@@ -162,7 +179,7 @@ class CreateWordView(LoginRequiredMixin, CreateView):
 
     template_name = 'create_word.html'
     form_class = WordForm
-    success_url = reverse_lazy('home')
+    success_url = reverse_lazy('home', kwargs={'dict':0})
     
     def get_context_data(self, **kwargs):
         """Add profile to context."""
@@ -170,7 +187,7 @@ class CreateWordView(LoginRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
         if self.request.user.is_authenticated:
             context['profile'] = self.request.user.profile
-            print("··is authenticated")
+            
         context['title'] = 'New'  
         context['id_word'] = '0'
         #import pdb; pdb.set_trace()      
@@ -185,7 +202,7 @@ class UpdateWordView(LoginRequiredMixin,UpdateView):
     
     model = Word
     form_class = WordForm
-    success_url = reverse_lazy('home')
+    success_url = reverse_lazy('home', kwargs={'dict':0})
     template_name = 'create_word.html'
 
     def get_context_data(self, **kwargs):
@@ -203,7 +220,7 @@ class UpdateWordView(LoginRequiredMixin,UpdateView):
 
 class DeleteWordView(DeleteView):
     model = Word
-    success_url = reverse_lazy('home')
+    success_url = reverse_lazy('home',kwargs={'dict':0})
 
     def get(self, request, *args, **kwargs):
         return self.post(request, *args, **kwargs)
@@ -217,7 +234,7 @@ class DetailWordView(DetailView):
         context = super().get_context_data(**kwargs)
         if self.request.user.is_authenticated:
             context['profile'] = self.request.user.profile
-        print(context)
+        
         return context
 
 
@@ -277,7 +294,7 @@ class DeleteComplementView(DeleteView):
 
     def get_success_url(self):
         id_deleted = self.kwargs['pk']
-        print(id_deleted)
+        
         complement = get_object_or_404(Complement, id = self.kwargs['pk'])
 
         return reverse('detail_word', args = [complement.parent.id])
@@ -291,7 +308,7 @@ class ComplementDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         if self.request.user.is_authenticated:
             context['profile'] = self.request.user.profile
-        print(context)
+        
         return context
 
 
@@ -323,10 +340,7 @@ class ListGenreView(LoginRequiredMixin, ListView, FormMixin):
 
     def get_queryset(self):
         return Genre.objects.filter(user = self.request.user.profile)
-
-    def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
-    
+        
     def post(self, request, *args, **kwargs):
         genres_id = request.POST.getlist('genre_check')
 

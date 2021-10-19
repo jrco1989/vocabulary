@@ -45,6 +45,14 @@ class Word(models.Model):
     Profile,
     on_delete= models.CASCADE,
     )
+    
+    genre = models.ManyToManyField(
+        Genre,
+        blank=True,
+        null=True,
+        help_text= 'choice one or more categories'
+        )
+
     title = CharField(
         max_length = 50,
         help_text = 'word searched'
@@ -56,12 +64,7 @@ class Word(models.Model):
     created = models.DateTimeField(
         auto_now_add= True,
     )
-    genre = models.ManyToManyField(
-        Genre,
-        blank=True,
-        null=True,
-        help_text= 'choice one or more categories'
-        )
+    
 
     class Meta():
         ordering = ['created']

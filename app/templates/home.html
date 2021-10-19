@@ -16,15 +16,17 @@
       </a>
     {% endif %}
     <h3><a href="{%url 'detail_word' pk=word.id%}">{{ word.title}}</a></h3> 
-    <p><strong>Genres:</strong> {% for genre in word.genre.all %} {{ genre }}{% if not forloop.last %},{% endif %}{% endfor %}</p>  
     <p>{{ word.meaning}}</p>
+    <br>
+    <p><strong>Genres:</strong> {% for genre in word.genre.all %} {{ genre }}{% if not forloop.last %},{% endif %}{% endfor %}</p>  
     <p>{{ word.created}} by {{word.user}}</p>
 
     {% for complement in word.complement_set.all %}
     <a href="">{{complement.title}}</a>{% if not forloop.last %},{% endif %}
     {% endfor %}
     <hr>
- 
+    {% empty %}
+    <p>Not found results</p>
 
     {%endfor%}
 
@@ -66,10 +68,14 @@
 			<input type="checkbox" name="genre_check" value="{{genre.id}}" >
 			{{genre}}
 			<br>
-			
+            {% empty %}
+            <p>Not found results</p>
 		{%endfor%}
-		<button class="btn btn-primary btn-block mt-5" type="submit">delete</button>
-		<button class="btn btn-primary btn-block mt-5" type="submit">delete</button>
+		<button class="btn btn-primary btn-block mt-5" type="submit">filter</button>
+      </form>
+      
+      <form action="{%url 'home' 0%}" method="GET">
+		<button class="btn btn-primary btn-block mt-5" type="submit">Undo filter</button>
       </form>
 </div>
     {% endblock%}

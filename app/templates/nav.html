@@ -2,7 +2,7 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     {%if user.is_authenticated%}
 
-        <a class="navbar-brand" href="{% url 'index'%}">
+        <a class="navbar-brand" href="{% url 'home' 0 %}">
             {% if request.user.profile.picture %}
             <img src="{{ request.user.profile.picture.url }}" height="35" class="d-inline-block align-top rounded-circle" />
             {% else%}
@@ -32,9 +32,10 @@
                     </a>
                 </li>
             </ul>
-            <form class="form-inline my-2 my-lg-0 nav-icon">
-                <input class="form-control mr-sm-2 nav-icon" type="search" placeholder="Search">
+            <form action="{% url 'home' 0 %}"class="form-inline my-2 my-lg-0 nav-icon">
+                <input type="text" class="form-control mr-sm-2 nav-icon" id="searcher_title" placeholder="Search by title" name="searchByTitle" value="{{request.GET.searchByTitle}}">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+
             </form>
         </div>
     {%else%}

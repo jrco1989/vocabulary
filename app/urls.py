@@ -25,11 +25,6 @@ urlpatterns=[
         name='signup'
     ),
     path(
-        route='user/',
-        view=views.WordsView.as_view(),
-        name='home'
-    ),
-    path(
         route='user/<dict>',
         view=views.WordsView.as_view(),
         name='home'
