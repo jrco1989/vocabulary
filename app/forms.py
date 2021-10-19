@@ -51,7 +51,6 @@ class ProfileForm2(forms.Form):
 		own_username = User.objects.get(id=self.cleaned_data['user_id']).username
 		username_taken=User.objects.filter(username=username).exists()	
 		if username_taken:
-			print('it is error')
 			raise forms.ValidationError ('Username is already in use') 
 		return username 
 
@@ -77,7 +76,6 @@ class ProfileForm(forms.ModelForm):
 		own_username = User.objects.get(id=self.cleaned_data['user_id']).username
 		username_taken=User.objects.filter(username=username).exists()	
 		if username_taken and username != own_username:
-			print('it is error')
 			raise forms.ValidationError ('Username is already in use') 
 		return username 
 
@@ -107,8 +105,6 @@ class WordForm (forms.ModelForm):
 			'genre': forms.CheckboxSelectMultiple()}
 
 	def __init__(self, *args, **kwargs):
-		print('kwargs')
-		print(kwargs)
 		user = kwargs['initial']['user']
 		super(WordForm, self).__init__(*args, **kwargs)
 		self.fields['genre'].queryset = Genre.objects.filter(user=user)

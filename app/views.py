@@ -187,7 +187,6 @@ class CreateWordView(LoginRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
         if self.request.user.is_authenticated:
             context['profile'] = self.request.user.profile
-            
         context['title'] = 'New'  
         context['id_word'] = '0'
         #import pdb; pdb.set_trace()      
@@ -234,7 +233,6 @@ class DetailWordView(DetailView):
         context = super().get_context_data(**kwargs)
         if self.request.user.is_authenticated:
             context['profile'] = self.request.user.profile
-        
         return context
 
 
@@ -294,7 +292,6 @@ class DeleteComplementView(DeleteView):
 
     def get_success_url(self):
         id_deleted = self.kwargs['pk']
-        
         complement = get_object_or_404(Complement, id = self.kwargs['pk'])
 
         return reverse('detail_word', args = [complement.parent.id])
@@ -308,7 +305,6 @@ class ComplementDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         if self.request.user.is_authenticated:
             context['profile'] = self.request.user.profile
-        
         return context
 
 
@@ -340,7 +336,10 @@ class ListGenreView(LoginRequiredMixin, ListView, FormMixin):
 
     def get_queryset(self):
         return Genre.objects.filter(user = self.request.user.profile)
-        
+
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+    
     def post(self, request, *args, **kwargs):
         genres_id = request.POST.getlist('genre_check')
 
